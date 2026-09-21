@@ -118,7 +118,86 @@ function App() {
     </div>
   )
 }
+function ProgrammeSetup() {
+  const [selectedProgrammeId, setSelectedProgrammeId] = useState(
+    programmes[0].id,
+  )
 
+  const [selectedMinorId, setSelectedMinorId] = useState(
+    minors[0].id,
+  )
+
+  const selectedProgramme = programmes.find(
+    (programme) => programme.id === selectedProgrammeId,
+  )
+
+  return (
+    <section className="panel programme-setup-panel">
+      <div className="programme-setup-heading">
+        <div>
+          <p className="eyebrow">PERSONALISE YOUR PLAN</p>
+          <h2>Set up your academic pathway</h2>
+          <p>
+            Choose your programme and optional minor to customise your planner.
+          </p>
+        </div>
+
+        <span className="setup-step">01 / 03</span>
+      </div>
+
+      <div className="programme-setup-fields">
+        <label>
+          <span>Faculty</span>
+          <select defaultValue={selectedProgramme?.faculty}>
+            <option>School of Computing</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Primary major</span>
+          <select
+            value={selectedProgrammeId}
+            onChange={(event) =>
+              setSelectedProgrammeId(event.target.value)
+            }
+          >
+            {programmes.map((programme) => (
+              <option key={programme.id} value={programme.id}>
+                {programme.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <span>Minor</span>
+          <select
+            value={selectedMinorId}
+            onChange={(event) => setSelectedMinorId(event.target.value)}
+          >
+            <option value="none">No minor selected</option>
+
+            {minors.map((minor) => (
+              <option key={minor.id} value={minor.id}>
+                {minor.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="programme-setup-footer">
+        <span>
+          Planning for <strong>{selectedProgramme?.name}</strong>
+        </span>
+
+        <span className="setup-ready">
+          ✓ Setup saved locally
+        </span>
+      </div>
+    </section>
+  )
+}
 function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
   return (
     <>
@@ -139,7 +218,7 @@ function Dashboard({ onNavigate }: { onNavigate: (page: Page) => void }) {
           <span>→</span>
         </button>
       </section>
-
+<ProgrammeSetup />
       <section className="stats-grid">
         <article className="stat-card accent-blue">
           <div className="stat-label">Current CAP</div>
@@ -865,7 +944,7 @@ function GpaCalculator() {
           </p>
         </article>
       </section>
-
+<ProgrammeSetup />
       <section className="stats-grid">
         <article className="stat-card accent-blue">
           <div className="stat-label">Total units</div>
