@@ -1,5 +1,10 @@
 import { useState } from 'react'
 import './App.css'
+import {
+  modules,
+  programmes,
+  minors,
+} from './data/nusCatalog'
 
 type Page =
   | 'home'
@@ -328,93 +333,34 @@ const gradePoints: Record<string, number> = {
   F: 0,
 }
 
-const initialGradeRows: GradeRow[] = [
-  {
-    code: 'CS2040S',
-    name: 'Data Structures and Algorithms',
-    units: 4,
-    grade: 'A-',
-  },
-  {
-    code: 'IS2103',
-    name: 'Enterprise Systems Development',
-    units: 4,
-    grade: 'B+',
-  },
-  {
-    code: 'ST2334',
-    name: 'Probability and Statistics',
-    units: 4,
-    grade: 'A',
-  },
-  {
-    code: 'GEA1000',
-    name: 'Quantitative Reasoning with Data',
-    units: 4,
-    grade: 'B',
-  },
-]
-type ClassSession = {
-  code: string
-  title: string
-  semester: 'Semester 1' | 'Semester 2'
-  day: string
-  time: string
-  room: string
-  color: string
+const gradeDefaults: Record<string, string> = {
+  CS2040S: 'A-',
+  IS2103: 'B+',
+  ST2334: 'A',
+  GEA1000: 'B',
 }
 
-const timetableDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-
-const timetableSlots = ['08:00', '10:00', '12:00', '14:00', '16:00']
-
-const classSessions: ClassSession[] = [
-  {
-    code: 'CS2040S',
-    title: 'Data Structures and Algorithms',
-    day: 'Tuesday',
-    time: '10:00',
-    room: 'COM1-02-19',
-    color: 'blue',
-    semester: 'Semester 2',
-  },
-  {
-    code: 'IS2103',
-    title: 'Enterprise Systems Development',
-    day: 'Monday',
-    time: '14:00',
-    room: 'COM2-01-03',
-    color: 'gold',
-    semester: 'Semester 2',
-  },
-  {
-    code: 'ST2334',
-    title: 'Probability and Statistics',
-    day: 'Wednesday',
-    time: '12:00',
-    room: 'LT19',
-    color: 'teal',
-    semester: 'Semester 2',
-  },
-  {
-    code: 'GEA1000',
-    title: 'Quantitative Reasoning with Data',
-    day: 'Thursday',
-    time: '10:00',
-    room: 'LT12',
-    color: 'purple',
-    semester: 'Semester 1',
-  },
-  {
-    code: 'IS2103',
-    title: 'Tutorial Group 04',
-    day: 'Friday',
-    time: '16:00',
-    room: 'COM2-02-05',
-    color: 'gold',
-    semester: 'Semester 2',
-  },
+const initialGradeRows: GradeRow[] = [
+  'CS2040S',
+  'IS2103',
+  'ST2334',
+  'GEA1000',
 ]
+  .map((code) => {
+    const module = modules.find((item) => item.code === code)
+
+    if (!module) {
+      return null
+    }
+
+    return {
+      code: module.code,
+      name: module.title,
+      units: module.units,
+      grade: gradeDefaults[module.code] ?? 'B',
+    }
+  })
+  .filter((row): row is GradeRow => row !== null)
 type Exam = {
   code: string
   title: string
@@ -457,43 +403,23 @@ type MinorRequirement = {
   completed: boolean
 }
 
-const initialMinorRequirements: MinorRequirement[] = [
-  {
-    code: 'CS1010S',
-    name: 'Programming Methodology',
-    units: 4,
-    completed: true,
-  },
-  {
-    code: 'CS1231S',
-    name: 'Discrete Structures',
-    units: 4,
-    completed: true,
-  },
-  {
-    code: 'CS2030S',
-    name: 'Programming Methodology II',
-    units: 4,
-    completed: false,
-  },
-  {
-    code: 'CS2040S',
-    name: 'Data Structures and Algorithms',
-    units: 4,
-    completed: false,
-  },
-  {
-    code: 'CS2100',
-    name: 'Computer Organisation',
-    units: 4,
-    completed: false,
-  },
-]
+const defaultMinor = minors[0]
+
+const initialMinorRequirements: MinorRequirement[] =
+  defaultMinor.requiredModules
+    .map((code) => modules.find((module) => module.code === code))
+    .filter(Boolean)
+    .map((module) => ({
+      code: module!.code,
+      name: module!.title,
+      units: module!.units,
+      completed: ['CS1010S', 'CS1231S'].includes(module!.code),
+    }))
 
 function MinorPlanner() {
-  const [selectedMinor, setSelectedMinor] = useState(
-    'Minor in Computer Science',
-  )
+ const [selectedMinor, setSelectedMinor] = useState(
+  defaultMinor.name,
+)
 
   const [requirements, setRequirements] = useState(
     initialMinorRequirements,
@@ -545,10 +471,11 @@ function MinorPlanner() {
           value={selectedMinor}
           onChange={(event) => setSelectedMinor(event.target.value)}
         >
-          <option>Minor in Computer Science</option>
-          <option>Minor in Information Systems</option>
-          <option>Minor in Statistics</option>
-          <option>Minor in Economics</option>
+         {minors.map((minor) => (
+  <option key={minor.id} value={minor.name}>
+    {minor.name}
+  </option>
+))}
         </select>
       </section>
 
@@ -710,14 +637,93 @@ function ExamSchedule() {
     </>
   )
 }
+const timetableDays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+]
+
+const timetableSlots = [
+  '08:00',
+  '10:00',
+  '12:00',
+  '14:00',
+  '16:00',
+]
+type ClassSession = {
+  code: string
+  title: string
+  semester: 'Semester 1' | 'Semester 2'
+  day: string
+  time: string
+  room: string
+  color: string
+}
+
+const classSessions: ClassSession[] = [
+  {
+    code: 'CS2040S',
+    title: 'Data Structures and Algorithms',
+    semester: 'Semester 2',
+    day: 'Tuesday',
+    time: '10:00',
+    room: 'COM1-02-19',
+    color: 'blue',
+  },
+  {
+    code: 'IS2103',
+    title: 'Enterprise Systems Development',
+    semester: 'Semester 2',
+    day: 'Monday',
+    time: '14:00',
+    room: 'COM2-01-03',
+    color: 'gold',
+  },
+  {
+    code: 'ST2334',
+    title: 'Probability and Statistics',
+    semester: 'Semester 2',
+    day: 'Wednesday',
+    time: '12:00',
+    room: 'LT19',
+    color: 'teal',
+  },
+  {
+    code: 'GEA1000',
+    title: 'Quantitative Reasoning with Data',
+    semester: 'Semester 1',
+    day: 'Thursday',
+    time: '10:00',
+    room: 'LT12',
+    color: 'purple',
+  },
+  {
+    code: 'IS2103',
+    title: 'Tutorial Group 04',
+    semester: 'Semester 2',
+    day: 'Friday',
+    time: '16:00',
+    room: 'COM2-02-05',
+    color: 'gold',
+  },
+]
 function TimetablePage() {
   const [selectedSemester, setSelectedSemester] = useState<
   'Semester 1' | 'Semester 2'
 >('Semester 2')
 
-const visibleSessions = classSessions.filter(
-  (session) => session.semester === selectedSemester,
-)
+const visibleSessions = classSessions.filter((session) => {
+  const module = modules.find(
+    (item) => item.code === session.code,
+  )
+
+  return (
+    session.semester === selectedSemester &&
+    module?.offeredIn.includes(selectedSemester)
+  )
+})
   function findSession(day: string, time: string) {
   return visibleSessions.find(
     (session) => session.day === day && session.time === time,
@@ -786,8 +792,8 @@ const visibleSessions = classSessions.filter(
 
                 return (
                   <div className="calendar-cell" key={`${day}-${time}`}>
-                    {session && (
-                      <div className={`class-card ${session.color}`}>
+                    {session && modules.some((module) => module.code === session.code) && (
+  <div className={`class-card ${session.color}`}>
                         <strong>{session.code}</strong>
                         <span>{session.title}</span>
                         <small>{session.room}</small>
@@ -938,6 +944,33 @@ function GpaCalculator() {
   )
 }
 function AcademicProgress() {
+    const programme = programmes[0]
+
+  const completedCodes = new Set([
+    'CS1010S',
+    'CS1231S',
+    'GEA1000',
+  ])
+
+  const requiredModules = programme.requiredModules
+    .map((code) => modules.find((module) => module.code === code))
+    .filter(Boolean)
+
+  const completedModules = requiredModules.filter((module) =>
+    completedCodes.has(module!.code),
+  )
+
+  const completedUnits = completedModules.reduce(
+    (sum, module) => sum + module!.units,
+    0,
+  )
+
+  const requiredUnits = requiredModules.reduce(
+    (sum, module) => sum + module!.units,
+    0,
+  )
+
+  
   return (
     <>
       <section className="welcome-row">
@@ -957,9 +990,15 @@ function AcademicProgress() {
 
       <section className="stats-grid">
         <article className="stat-card accent-blue">
-          <div className="stat-label">Overall completion</div>
-          <div className="stat-value">30%</div>
-          <div className="stat-note">48 of 160 units completed</div>
+         <div className="stat-label">Catalogue completion</div>
+
+<div className="stat-value">
+  {Math.round((completedUnits / requiredUnits) * 100)}%
+</div>
+
+<div className="stat-note">
+  {completedUnits} of {requiredUnits} catalogue units completed
+</div>
         </article>
 
         <article className="stat-card accent-gold">
@@ -1037,7 +1076,7 @@ function AcademicProgress() {
             <div className="semester-row">
               <span className="semester-status current">N</span>
               <span className="semester-label">Primary major</span>
-              <strong>Business Analytics</strong>
+              <strong>{programme.name}</strong>
             </div>
 
             <div className="semester-row">
@@ -1065,27 +1104,15 @@ function AcademicProgress() {
         </div>
 
         <div className="module-list">
-          <ModuleRow
-            code="CS1010S"
-            name="Programming Methodology"
-            units="4"
-          />
-          <ModuleRow
-            code="ST2334"
-            name="Probability and Statistics"
-            units="4"
-          />
-          <ModuleRow
-            code="IS1103"
-            name=" Ethics in Computing"
-            units="4"
-          />
-          <ModuleRow
-            code="GEA1000"
-            name="Quantitative Reasoning with Data"
-            units="4"
-          />
-        </div>
+  {requiredModules.map((module) => (
+    <ModuleRow
+      key={module!.code}
+      code={module!.code}
+      name={module!.title}
+      units={String(module!.units)}
+    />
+  ))}
+</div>
       </section>
     </>
   )
