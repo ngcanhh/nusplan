@@ -131,3 +131,60 @@ export const minors: Minor[] = [
     ],
   },
 ]
+export type ClassSession = {
+  code: string
+  title: string
+  semester: Semester
+  day: string
+  time: string
+  room: string
+  color: string
+}
+
+export const classSessions: ClassSession[] = [
+  {
+    code: 'CS2040S',
+    title: 'Data Structures and Algorithms',
+    semester: 'Semester 2',
+    day: 'Tuesday',
+    time: '10:00',
+    room: 'COM1-02-19',
+    color: 'blue',
+  },
+  {
+    code: 'IS2103',
+    title: 'Enterprise Systems Development',
+    semester: 'Semester 2',
+    day: 'Monday',
+    time: '14:00',
+    room: 'COM2-01-03',
+    color: 'gold',
+  },
+  {
+    code: 'ST2334',
+    title: 'Probability and Statistics',
+    semester: 'Semester 2',
+    day: 'Wednesday',
+    time: '12:00',
+    room: 'LT19',
+    color: 'teal',
+  },
+  {
+    code: 'GEA1000',
+    title: 'Quantitative Reasoning with Data',
+    semester: 'Semester 1',
+    day: 'Thursday',
+    time: '10:00',
+    room: 'LT12',
+    color: 'purple',
+  },
+  {
+    code: 'IS2103',
+    title: 'Tutorial Group 04',
+    semester: 'Semester 2',
+    day: 'Friday',
+    time: '16:00',
+    room: 'COM2-02-05',
+    color: 'gold',
+  },
+]
