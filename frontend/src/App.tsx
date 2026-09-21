@@ -100,6 +100,10 @@ function App() {
   <GpaCalculator />
 ) : activePage === 'timetable' ? (
   <TimetablePage />
+) : activePage === 'exams' ? (
+  <ExamSchedule />
+) : activePage === 'minor' ? (
+  <MinorPlanner />
 ) : (
   <PlaceholderPage title={pageTitles[activePage]} />
 )}
@@ -411,7 +415,301 @@ const classSessions: ClassSession[] = [
     semester: 'Semester 2',
   },
 ]
+type Exam = {
+  code: string
+  title: string
+  date: string
+  time: string
+  venue: string
+  duration: string
+}
 
+const examList: Exam[] = [
+  {
+    code: 'CS2040S',
+    title: 'Data Structures and Algorithms',
+    date: '14 Apr 2027',
+    time: '09:00 – 11:00',
+    venue: 'MPSH 1',
+    duration: '2 hours',
+  },
+  {
+    code: 'IS2103',
+    title: 'Enterprise Systems Development',
+    date: '20 Apr 2027',
+    time: '13:00 – 15:00',
+    venue: 'UTown Auditorium',
+    duration: '2 hours',
+  },
+  {
+    code: 'ST2334',
+    title: 'Probability and Statistics',
+    date: '26 Apr 2027',
+    time: '09:00 – 11:00',
+    venue: 'LT19',
+    duration: '2 hours',
+  },
+]
+type MinorRequirement = {
+  code: string
+  name: string
+  units: number
+  completed: boolean
+}
+
+const initialMinorRequirements: MinorRequirement[] = [
+  {
+    code: 'CS1010S',
+    name: 'Programming Methodology',
+    units: 4,
+    completed: true,
+  },
+  {
+    code: 'CS1231S',
+    name: 'Discrete Structures',
+    units: 4,
+    completed: true,
+  },
+  {
+    code: 'CS2030S',
+    name: 'Programming Methodology II',
+    units: 4,
+    completed: false,
+  },
+  {
+    code: 'CS2040S',
+    name: 'Data Structures and Algorithms',
+    units: 4,
+    completed: false,
+  },
+  {
+    code: 'CS2100',
+    name: 'Computer Organisation',
+    units: 4,
+    completed: false,
+  },
+]
+
+function MinorPlanner() {
+  const [selectedMinor, setSelectedMinor] = useState(
+    'Minor in Computer Science',
+  )
+
+  const [requirements, setRequirements] = useState(
+    initialMinorRequirements,
+  )
+
+  const completedUnits = requirements
+    .filter((requirement) => requirement.completed)
+    .reduce((sum, requirement) => sum + requirement.units, 0)
+
+  const totalUnits = requirements.reduce(
+    (sum, requirement) => sum + requirement.units,
+    0,
+  )
+
+  function toggleRequirement(code: string) {
+    setRequirements((currentRequirements) =>
+      currentRequirements.map((requirement) =>
+        requirement.code === code
+          ? { ...requirement, completed: !requirement.completed }
+          : requirement,
+      ),
+    )
+  }
+
+  return (
+    <>
+      <section className="welcome-row">
+        <div>
+          <p className="eyebrow">ADDITIONAL AREA OF STUDY</p>
+          <h1>Minor planner</h1>
+          <p className="welcome-description">
+            Track your minor requirements and see which modules remain.
+          </p>
+        </div>
+
+        <button className="primary-button">
+          Explore minors
+          <span>→</span>
+        </button>
+      </section>
+
+      <section className="panel minor-selector-panel">
+        <div>
+          <p className="eyebrow">SELECT YOUR MINOR</p>
+          <h2>Academic pathway</h2>
+        </div>
+
+        <select
+          value={selectedMinor}
+          onChange={(event) => setSelectedMinor(event.target.value)}
+        >
+          <option>Minor in Computer Science</option>
+          <option>Minor in Information Systems</option>
+          <option>Minor in Statistics</option>
+          <option>Minor in Economics</option>
+        </select>
+      </section>
+
+      <section className="stats-grid">
+        <article className="stat-card accent-teal">
+          <div className="stat-label">Minor progress</div>
+          <div className="stat-value">
+            {Math.round((completedUnits / totalUnits) * 100)}%
+          </div>
+          <div className="stat-note">
+            {completedUnits} of {totalUnits} units completed
+          </div>
+        </article>
+
+        <article className="stat-card accent-blue">
+          <div className="stat-label">Completed units</div>
+          <div className="stat-value">{completedUnits}</div>
+          <div className="stat-note">Counted towards your minor</div>
+        </article>
+
+        <article className="stat-card accent-gold">
+          <div className="stat-label">Units remaining</div>
+          <div className="stat-value">{totalUnits - completedUnits}</div>
+          <div className="stat-note">Required to complete this minor</div>
+        </article>
+      </section>
+
+      <section className="panel minor-requirements-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">REQUIREMENT CHECKLIST</p>
+            <h2>{selectedMinor}</h2>
+          </div>
+
+          <span className="module-count">
+            {requirements.length} modules
+          </span>
+        </div>
+
+        <div className="minor-requirements-list">
+          {requirements.map((requirement) => (
+            <label className="minor-requirement" key={requirement.code}>
+              <input
+                type="checkbox"
+                checked={requirement.completed}
+                onChange={() => toggleRequirement(requirement.code)}
+              />
+
+              <span className="minor-checkbox">
+                {requirement.completed ? '✓' : ''}
+              </span>
+
+              <span className="minor-module-code">
+                {requirement.code}
+              </span>
+
+              <span className="minor-module-name">
+                {requirement.name}
+              </span>
+
+              <span className="minor-module-units">
+                {requirement.units} units
+              </span>
+
+              <span
+                className={
+                  requirement.completed
+                    ? 'minor-status completed'
+                    : 'minor-status remaining'
+                }
+              >
+                {requirement.completed ? 'Completed' : 'Remaining'}
+              </span>
+            </label>
+          ))}
+        </div>
+      </section>
+    </>
+  )
+}
+function ExamSchedule() {
+  return (
+    <>
+      <section className="welcome-row">
+        <div>
+          <p className="eyebrow">ASSESSMENT CALENDAR</p>
+          <h1>Exam schedule</h1>
+          <p className="welcome-description">
+            Keep track of your upcoming examinations and venues.
+          </p>
+        </div>
+
+        <button className="primary-button">
+          Add exam
+          <span>+</span>
+        </button>
+      </section>
+
+      <section className="stats-grid">
+        <article className="stat-card accent-blue">
+          <div className="stat-label">Upcoming exams</div>
+          <div className="stat-value">{examList.length}</div>
+          <div className="stat-note">Semester 2 · AY 2026/27</div>
+        </article>
+
+        <article className="stat-card accent-gold">
+          <div className="stat-label">Next exam</div>
+          <div className="stat-value">12 <small>days</small></div>
+          <div className="stat-note">CS2040S</div>
+        </article>
+
+        <article className="stat-card accent-teal">
+          <div className="stat-label">Total exam hours</div>
+          <div className="stat-value">6</div>
+          <div className="stat-note">Across 3 examinations</div>
+        </article>
+      </section>
+
+      <section className="panel exam-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">SEMESTER 2 · AY 2026/27</p>
+            <h2>Upcoming examinations</h2>
+          </div>
+
+          <button className="text-button">Calendar view →</button>
+        </div>
+
+        <div className="exam-list">
+          {examList.map((exam) => (
+            <article className="exam-row" key={exam.code}>
+              <div className="exam-date">
+                <strong>{exam.date.split(' ')[0]}</strong>
+                <span>{exam.date.split(' ').slice(1).join(' ')}</span>
+              </div>
+
+              <div className="exam-info">
+                <strong>{exam.code}</strong>
+                <span>{exam.title}</span>
+              </div>
+
+              <div className="exam-detail">
+                <span>Time</span>
+                <strong>{exam.time}</strong>
+              </div>
+
+              <div className="exam-detail">
+                <span>Venue</span>
+                <strong>{exam.venue}</strong>
+              </div>
+
+              <div className="exam-status">
+                <span>Scheduled</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  )
+}
 function TimetablePage() {
   const [selectedSemester, setSelectedSemester] = useState<
   'Semester 1' | 'Semester 2'
