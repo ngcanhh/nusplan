@@ -764,3 +764,293 @@ h1 {
     display: none;
   }
 }
+.module-name small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.grade-select {
+  min-width: 70px;
+  padding: 8px 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: white;
+  color: var(--navy-950);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.gpa-result-panel {
+  padding: 28px;
+  background: var(--navy-950);
+  color: white;
+}
+
+.gpa-result-panel h2 {
+  color: white;
+  font-size: 22px;
+}
+
+.cap-value {
+  margin: 35px 0 22px;
+  color: var(--gold);
+  font-size: 70px;
+  font-weight: 800;
+  letter-spacing: -4px;
+}
+
+.cap-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #9bb0c2;
+  font-size: 11px;
+}
+
+.gpa-result-panel .progress-bar {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.gpa-result-panel .progress-bar span {
+  background: var(--gold);
+}
+
+.gpa-note {
+  margin-top: 22px;
+  color: #a9bdcd;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.timetable-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.semester-selector {
+  display: grid;
+  gap: 3px;
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.semester-selector span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.semester-selector small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.timetable-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.secondary-light-button,
+.today-button {
+  height: 37px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--navy-900);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.today-button {
+  color: var(--blue);
+}
+
+.timetable-panel {
+  overflow-x: auto;
+  padding: 0;
+}
+
+.calendar-grid {
+  min-width: 850px;
+}
+
+.calendar-corner,
+.calendar-day {
+  display: flex;
+  align-items: center;
+  min-height: 55px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calendar-corner {
+  float: left;
+  width: 86px;
+}
+
+.calendar-day {
+  display: inline-flex;
+  width: calc((100% - 86px) / 5);
+  border-left: 1px solid var(--line);
+  color: var(--navy-900);
+}
+
+.calendar-row {
+  display: grid;
+  grid-template-columns: 86px repeat(5, 1fr);
+  min-height: 105px;
+}
+
+.time-label {
+  padding: 15px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.calendar-cell {
+  position: relative;
+  padding: 7px;
+  border-bottom: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.class-card {
+  display: grid;
+  gap: 4px;
+  height: 100%;
+  padding: 10px;
+  border-left: 3px solid currentColor;
+  border-radius: 7px;
+  background: #edf4ff;
+  color: var(--blue);
+}
+
+.class-card strong {
+  font-size: 11px;
+}
+
+.class-card span,
+.class-card small {
+  color: var(--ink);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.class-card small {
+  color: var(--muted);
+}
+
+.class-card.gold {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.class-card.teal {
+  background: #e5f6f3;
+  color: var(--teal);
+}
+
+.class-card.purple {
+  background: #f0ebff;
+  color: var(--purple);
+}
+
+.timetable-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 18px;
+  padding: 18px 21px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+}
+
+.schedule-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.schedule-status strong,
+.schedule-status span {
+  display: block;
+}
+
+.schedule-status strong {
+  color: var(--teal);
+  font-size: 12px;
+}
+
+.schedule-status span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.schedule-legend {
+  display: flex;
+  gap: 15px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.schedule-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.legend-dot.gold {
+  background: var(--gold);
+}
+
+.legend-dot.teal {
+  background: var(--teal);
+}
+
+@media (max-width: 700px) {
+  .timetable-toolbar,
+  .timetable-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .schedule-legend {
+    flex-wrap: wrap;
+  }
+}
+.semester-selector select {
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--navy-950);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
