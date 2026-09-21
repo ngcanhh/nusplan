@@ -114,6 +114,34 @@ export const programmes: Programme[] = [
       'GEA1000',
     ],
   },
+  {
+    id: 'computer-science',
+    name: 'Computer Science',
+    faculty: 'School of Computing',
+    totalUnits: 160,
+    requiredModules: ['CS1010S', 'CS1231S', 'CS2030S', 'CS2040S', 'CS2100'],
+  },
+  {
+    id: 'information-systems',
+    name: 'Information Systems',
+    faculty: 'School of Computing',
+    totalUnits: 160,
+    requiredModules: ['CS1010S', 'IS2103', 'ST2334', 'GEA1000'],
+  },
+  {
+    id: 'information-security',
+    name: 'Information Security',
+    faculty: 'School of Computing',
+    totalUnits: 160,
+    requiredModules: ['CS1010S', 'CS1231S', 'CS2040S', 'CS2100'],
+  },
+  {
+    id: 'computer-engineering',
+    name: 'Computer Engineering',
+    faculty: 'School of Computing',
+    totalUnits: 160,
+    requiredModules: ['CS1010S', 'CS1231S', 'CS2100', 'GEA1000'],
+  },
 ]
 
 export const minors: Minor[] = [
@@ -129,6 +157,27 @@ export const minors: Minor[] = [
       'CS2040S',
       'CS2100',
     ],
+  },
+  {
+    id: 'statistics',
+    name: 'Minor in Statistics',
+    hostFaculty: 'Faculty of Science',
+    requiredUnits: 20,
+    requiredModules: ['ST2334', 'GEA1000'],
+  },
+  {
+    id: 'economics',
+    name: 'Minor in Economics',
+    hostFaculty: 'NUS College of Humanities and Sciences',
+    requiredUnits: 20,
+    requiredModules: ['GEA1000'],
+  },
+  {
+    id: 'innovation-and-entrepreneurship',
+    name: 'Minor in Innovation and Entrepreneurship',
+    hostFaculty: 'NUS Enterprise',
+    requiredUnits: 20,
+    requiredModules: ['GEA1000'],
   },
 ]
 export type ClassSession = {

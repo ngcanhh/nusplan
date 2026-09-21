@@ -6,6 +6,7 @@ import {
   minors,
   classSessions,
 } from './data/nusCatalog'
+import { usePlannerState } from './state/usePlannerState'
 
 type Page =
   | 'home'
@@ -119,17 +120,11 @@ function App() {
   )
 }
 function ProgrammeSetup() {
-  const [selectedProgrammeId, setSelectedProgrammeId] = useState(
-    programmes[0].id,
-  )
+const { state, updateState } = usePlannerState()
 
-  const [selectedMinorId, setSelectedMinorId] = useState(
-    minors[0].id,
-  )
-
-  const selectedProgramme = programmes.find(
-    (programme) => programme.id === selectedProgrammeId,
-  )
+const selectedProgramme = programmes.find(
+  (programme) => programme.id === state.programmeId,
+)
 
   return (
     <section className="panel programme-setup-panel">
@@ -156,10 +151,10 @@ function ProgrammeSetup() {
         <label>
           <span>Primary major</span>
           <select
-            value={selectedProgrammeId}
-            onChange={(event) =>
-              setSelectedProgrammeId(event.target.value)
-            }
+            value={state.programmeId}
+onChange={(event) =>
+  updateState('programmeId', event.target.value)
+}
           >
             {programmes.map((programme) => (
               <option key={programme.id} value={programme.id}>
@@ -172,8 +167,10 @@ function ProgrammeSetup() {
         <label>
           <span>Minor</span>
           <select
-            value={selectedMinorId}
-            onChange={(event) => setSelectedMinorId(event.target.value)}
+            value={state.minorId}
+onChange={(event) =>
+  updateState('minorId', event.target.value)
+}
           >
             <option value="none">No minor selected</option>
 
@@ -497,9 +494,10 @@ const initialMinorRequirements: MinorRequirement[] =
     }))
 
 function MinorPlanner() {
- const [selectedMinor, setSelectedMinor] = useState(
-  defaultMinor.name,
-)
+ const { state, updateState } = usePlannerState()
+
+const selectedMinor =
+  minors.find((minor) => minor.id === state.minorId) ?? defaultMinor
 
   const [requirements, setRequirements] = useState(
     initialMinorRequirements,
@@ -548,9 +546,11 @@ function MinorPlanner() {
         </div>
 
         <select
-          value={selectedMinor}
-          onChange={(event) => setSelectedMinor(event.target.value)}
-        >
+  value={state.minorId}
+  onChange={(event) =>
+    updateState('minorId', event.target.value)
+  }
+>
          {minors.map((minor) => (
   <option key={minor.id} value={minor.name}>
     {minor.name}
@@ -587,7 +587,7 @@ function MinorPlanner() {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">REQUIREMENT CHECKLIST</p>
-            <h2>{selectedMinor}</h2>
+            <h2>{selectedMinor.name}</h2>
           </div>
 
           <span className="module-count">
@@ -734,9 +734,9 @@ const timetableSlots = [
 ]
 
 function TimetablePage() {
-  const [selectedSemester, setSelectedSemester] = useState<
-  'Semester 1' | 'Semester 2'
->('Semester 2')
+  const { state, updateState } = usePlannerState()
+
+const selectedSemester = state.semester
 
 const visibleSessions = classSessions.filter((session) => {
   const module = modules.find(
@@ -778,10 +778,11 @@ const visibleSessions = classSessions.filter((session) => {
   <select
     value={selectedSemester}
     onChange={(event) =>
-      setSelectedSemester(
-        event.target.value as 'Semester 1' | 'Semester 2',
-      )
-    }
+  updateState(
+    'semester',
+    event.target.value as 'Semester 1' | 'Semester 2',
+  )
+}
   >
     <option value="Semester 1">Semester 1</option>
     <option value="Semester 2">Semester 2</option>
@@ -967,8 +968,57 @@ function GpaCalculator() {
     </>
   )
 }
+type RemainingModule = {
+  code: string
+  title: string
+  units: number
+  category: string
+}
+
+const remainingModulesByProgramme: Record<string, RemainingModule[]> = {
+  'business-analytics': [
+    { code: 'BT3103', title: 'Business Analytics Capstone', units: 4, category: 'Major requirement' },
+    { code: 'BT4013', title: 'Analytics Practicum', units: 4, category: 'Major elective' },
+    { code: 'DAO2702', title: 'Data-driven Decision Making', units: 4, category: 'Major requirement' },
+  ],
+  'computer-science': [
+    { code: 'CS2103T', title: 'Software Engineering', units: 4, category: 'Major requirement' },
+    { code: 'CS2106', title: 'Introduction to Operating Systems', units: 4, category: 'Major requirement' },
+    { code: 'CS3230', title: 'Design and Analysis of Algorithms', units: 4, category: 'Major requirement' },
+  ],
+  'information-systems': [
+    { code: 'IS3106', title: 'Enterprise Systems Server-side Development', units: 4, category: 'Major requirement' },
+    { code: 'IS4103', title: 'Cloud Computing and Systems', units: 4, category: 'Major requirement' },
+    { code: 'IS4302', title: 'Information Systems Project', units: 4, category: 'Major capstone' },
+  ],
+  'information-security': [
+    { code: 'CS2107', title: 'Introduction to Information Security', units: 4, category: 'Major requirement' },
+    { code: 'CS4238', title: 'Computer Security Practice', units: 4, category: 'Major requirement' },
+    { code: 'CS4239', title: 'Software Security', units: 4, category: 'Major elective' },
+  ],
+  'computer-engineering': [
+    { code: 'CS2040S', title: 'Data Structures and Algorithms', units: 4, category: 'Major requirement' },
+    { code: 'CS2103T', title: 'Software Engineering', units: 4, category: 'Major requirement' },
+    { code: 'CG2271', title: 'Real-Time Operating Systems', units: 4, category: 'Major requirement' },
+    { code: 'EE2026', title: 'Digital Fundamentals', units: 4, category: 'Major requirement' },
+  ],
+}
+
 function AcademicProgress() {
-    const programme = programmes[0]
+  const { state } = usePlannerState()
+  const programme = programmes.find(
+    (item) => item.id === state.programmeId,
+  )
+
+  if (!programme) {
+    return (
+      <section className="placeholder-page">
+        <p className="eyebrow">DEGREE JOURNEY</p>
+        <h1>Academic progress</h1>
+        <p>Select a programme to view remaining modules.</p>
+      </section>
+    )
+  }
 
   const completedCodes = new Set([
     'CS1010S',
@@ -1138,7 +1188,37 @@ function AcademicProgress() {
   ))}
 </div>
       </section>
+
+      <section className="panel modules-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">MODULE PLAN</p>
+            <h2>Remaining modules · {programme.name}</h2>
+          </div>
+          <span className="module-count">
+            {(remainingModulesByProgramme[programme.id] ?? []).length} modules
+          </span>
+        </div>
+
+        <div className="remaining-module-list">
+          {(remainingModulesByProgramme[programme.id] ?? []).map((module) => (
+            <RemainingModuleRow key={module.code} module={module} />
+          ))}
+        </div>
+      </section>
     </>
+  )
+}
+
+function RemainingModuleRow({ module }: { module: RemainingModule }) {
+  return (
+    <div className="remaining-module-row">
+      <div className="module-code">{module.code}</div>
+      <div className="module-name">{module.title}</div>
+      <div className="module-units">{module.units} U</div>
+      <div className="remaining-module-category">{module.category}</div>
+      <div className="remaining-module-status">Not started</div>
+    </div>
   )
 }
 function PlaceholderPage({ title }: { title: string }) {
